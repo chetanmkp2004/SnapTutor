@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple "S" letter for SnapTutor icon foreground -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,38 C46,35 49,33 54,33 C59,33 62,35 62,38 C62,41 59,43 54,43 C49,43 46,45 46,48 C46,51 49,53 54,53 C59,53 62,51 62,48"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"/>
+    <!-- Camera viewfinder corners -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M30,30 L30,25 L35,25 M73,25 L78,25 L78,30 M78,56 L78,61 L73,61 M35,61 L30,61 L30,56"/>
+</vector>

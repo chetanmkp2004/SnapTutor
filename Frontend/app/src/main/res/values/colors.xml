@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="st_background">#FF0D0D0F</color>
+    <color name="st_surface">#FF1A1A1E</color>
+    <color name="st_primary">#FF7C4DFF</color>
+    <color name="st_on_primary">#FFFFFFFF</color>
+    <color name="st_secondary">#FF00E5FF</color>
+    <color name="st_error">#FFCF6679</color>
+    <color name="st_on_background">#FFE8E8E8</color>
+    <color name="st_on_surface">#FFC0C0C4</color>
+</resources>

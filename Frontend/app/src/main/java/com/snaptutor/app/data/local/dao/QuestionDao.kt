@@ -1,0 +1,23 @@
+package com.snaptutor.app.data.local.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.snaptutor.app.data.local.entities.QuestionEntity
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface QuestionDao {
+    @Query("SELECT * FROM questions ORDER BY timestamp DESC")
+    fun getAllQuestions(): Flow<List<QuestionEntity>>
+
+    @Query("SELECT * FROM questions WHERE id = :id")
+    suspend fun getQuestionById(id: String): QuestionEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertQuestion(question: QuestionEntity)
+
+    @Query("DELETE FROM questions WHERE id = :id")
+    suspend fun deleteQuestion(id: String)
+}

@@ -1,31 +1,83 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# SnapTutor — Android Frontend Foundation
 
-* [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+**SnapTutor** is an AI-powered Smart Education application built for the 30-hour iQOO Hackathon 2026. The app guides students through a complete learning loop:
 
-* [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./shared/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./shared/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./shared/src/jvmMain/kotlin)
-    folder is the appropriate location.
-
-### Running the apps
-
-Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
-
-- Android app: `./gradlew :androidApp:assembleDebug`
-- iOS app: open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
-### Running tests
-
-Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
-
-- Android tests: `./gradlew :shared:testAndroidHostTest`
-- iOS tests: `./gradlew :shared:iosSimulatorArm64Test`
+```
+Dashboard ──► Scan ──► Learn ──► Evaluation ──► Dashboard
+```
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 🚀 Tech Stack
+
+- **Platform:** Android Native (Single `:app` module)
+- **Language:** Kotlin 2.4.20
+- **UI Framework:** Jetpack Compose + Material 3 (Compose BOM 2026.09.00)
+- **Navigation:** Jetpack Navigation Compose (v2.10.1) with type-safe `kotlinx.serialization` routes
+- **Architecture:** MVVM + Clean Architecture with Repository pattern & `AppContainer` manual DI
+- **State Management:** `UiState<T>` sealed class (`Loading`, `Success`, `Error`) with `StateFlow`
+- **Database (Scaffold):** Android Room 2.8.5 with KSP
+- **Networking (Scaffold):** Retrofit 3.0.0 + OkHttp 5.5.0 + kotlinx.serialization
+- **Testing:** JUnit 4 + Kotlinx Coroutines Test
+
+---
+
+## 📱 Navigation & Flow
+
+All routes are type-safe and defined in `Screen.kt`:
+
+1. **Dashboard (`Screen.Dashboard`):**
+   - Welcomes the student with current streak and learning metrics.
+   - Quick action to scan or type a question.
+   - `ContinueLearningCard` resumes recently viewed topics.
+   - `WeakTopicCard` highlights review areas to boost mastery.
+   - `SyncStatusCard` displays offline/cloud synchronization status.
+
+2. **Scan (`Screen.Scan`):**
+   - Mode 1: Simulated camera viewfinder with capture button triggering simulated on-device OCR.
+   - Mode 2: Manual question typing and editing.
+   - Triggers transition to Learn screen.
+
+3. **Learn (`Screen.Learn(questionText)`):**
+   - Displays step-by-step mathematical reasoning.
+   - Highlights key concepts and curriculum/textbook references.
+   - Indicates on-device AI generation.
+   - "Practice Similar Questions" button navigates to Evaluation.
+
+4. **Evaluation (`Screen.Evaluation(topic)`):**
+   - Interactive multiple-choice quiz questions with progress indicator.
+   - Immediate feedback and explanations upon submission.
+   - Adaptive learning recommendation engine (`AdaptationManager`) computes next difficulty and suggested focus areas.
+   - Seamless navigation back to Dashboard with updated student progress.
+
+5. **Progress (`Screen.Progress`):**
+   - Detailed progress analytics, topics mastered, and weak topic reviews.
+
+---
+
+## 🧩 Mock & Integration Contracts
+
+Every integration point is backed by a clean interface with a mock/fake implementation:
+
+| Domain | Interface | Fake Implementation | Real Service (Phase 2) |
+|---|---|---|---|
+| **Learning / Explanations** | `LearningRepository` | `FakeLearningRepository` | On-device Gemma / Cloud LLM |
+| **Quiz & Evaluation** | `EvaluationRepository` | `FakeEvaluationRepository` | Dynamic RAG Question Bank |
+| **Student Progress** | `ProgressRepository` | `FakeProgressRepository` | Room DB + Supabase Sync |
+| **OCR Text Extraction** | `OcrProcessor` | `FakeOcrProcessor` | Google ML Kit Text Recognition |
+| **Local Inference** | `LocalLlmManager` | `FakeLocalLlmManager` | On-device Edge AI |
+| **Sync Management** | `SyncManager` | `SyncManager` (In-Memory) | WorkManager + Backend Sync |
+
+All dependencies are wired in `AppContainer.kt`, providing a single swap point for real implementations without touching UI or ViewModel code.
+
+---
+
+## 🛠️ Build & Run Commands
+
+```powershell
+# Build Debug APK
+.\gradlew.bat assembleDebug
+
+# Run Unit Tests
+.\gradlew.bat testDebugUnitTest
+```
